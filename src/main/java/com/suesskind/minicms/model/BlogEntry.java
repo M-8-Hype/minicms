@@ -2,7 +2,9 @@ package com.suesskind.minicms.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
+
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -11,9 +13,11 @@ public class BlogEntry {
     private String title;
     private String content;
     private String author;
-    private String releaseDate;
+    private LocalDate releaseDate;
 
-    public BlogEntry(UUID id, String title, String content, String author, String releaseDate) {
+    public BlogEntry() { }
+
+    public BlogEntry(UUID id, String title, String content, String author, LocalDate releaseDate) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -37,7 +41,7 @@ public class BlogEntry {
         return author;
     }
 
-    public String getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 }

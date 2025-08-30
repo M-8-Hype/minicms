@@ -46,7 +46,7 @@ public class BlogEntryController {
                 blogEntry.getTitle(),
                 blogEntry.getContent(),
                 blogEntry.getAuthor(),
-                blogEntry.getReleaseDate()
+                blogEntry.getReleaseDate().toString()
         );
     }
 }
