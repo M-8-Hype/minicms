@@ -2,21 +2,24 @@ package com.suesskind.minicms.service;
 
 import com.suesskind.minicms.dto.BlogEntryRequestDto;
 import com.suesskind.minicms.model.BlogEntry;
+import com.suesskind.minicms.model.Category;
 import com.suesskind.minicms.repository.BlogEntryRepository;
+import com.suesskind.minicms.repository.CategoryRepository;
 import com.suesskind.minicms.util.UuidUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogEntryService {
 
     @Autowired
     private BlogEntryRepository blogEntryRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public List<BlogEntry> getBlogEntries() {
         return blogEntryRepository.findAll();
@@ -28,7 +31,13 @@ public class BlogEntryService {
     }
 
     public BlogEntry createBlogEntry(BlogEntryRequestDto blogEntryRequestDto) {
-        BlogEntry blogEntry = mapToEntity(blogEntryRequestDto);
+        Set<Category> categories = blogEntryRequestDto.getCategoryIds().stream()
+                .map(UuidUtils::parseId)
+                .map(categoryRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+        BlogEntry blogEntry = mapToEntity(blogEntryRequestDto, categories);
         return blogEntryRepository.save(blogEntry);
     }
 
@@ -53,13 +62,14 @@ public class BlogEntryService {
         blogEntryRepository.deleteById(uuid);
     }
 
-    private BlogEntry mapToEntity(BlogEntryRequestDto requestDto) {
+    private BlogEntry mapToEntity(BlogEntryRequestDto requestDto, Set<Category> categories) {
         return new BlogEntry(
                 UuidUtils.generateId(),
                 requestDto.getTitle(),
                 requestDto.getContent(),
                 requestDto.getAuthor(),
-                getCurrentDate()
+                getCurrentDate(),
+                categories
         );
     }
 

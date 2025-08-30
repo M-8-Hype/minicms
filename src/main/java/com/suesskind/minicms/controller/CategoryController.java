@@ -9,12 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponseDto>> getCategories() {
+        List<Category> categories = categoryService.getCategories();
+        List<CategoryResponseDto> dtos = categories.stream()
+                .map(this::mapToDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
 
     @PostMapping
     public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody CategoryRequestDto categoryRequestDto) {

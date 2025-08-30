@@ -3,6 +3,7 @@ package com.suesskind.minicms.controller;
 import com.suesskind.minicms.dto.BlogEntryRequestDto;
 import com.suesskind.minicms.dto.BlogEntryResponseDto;
 import com.suesskind.minicms.model.BlogEntry;
+import com.suesskind.minicms.model.Category;
 import com.suesskind.minicms.service.BlogEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -65,12 +68,16 @@ public class BlogEntryController {
     }
 
     private BlogEntryResponseDto mapToDto(BlogEntry blogEntry) {
+        Set<String> categoryNames = blogEntry.getCategories().stream()
+                .map(Category::getName)
+                .collect(Collectors.toSet());
         return new BlogEntryResponseDto(
                 blogEntry.getId().toString(),
                 blogEntry.getTitle(),
                 blogEntry.getContent(),
                 blogEntry.getAuthor(),
-                blogEntry.getReleaseDate().toString()
+                blogEntry.getReleaseDate().toString(),
+                categoryNames
         );
     }
 }

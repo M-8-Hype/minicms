@@ -1,14 +1,18 @@
 package com.suesskind.minicms.dto;
 
+import java.util.Set;
+
 public class BlogEntryRequestDto {
     private String title;
     private String content;
     private String author;
+    private Set<String> categoryIds;
 
-    public BlogEntryRequestDto(String title, String content, String author) {
+    public BlogEntryRequestDto(String title, String content, String author, Set<String> categoryIds) {
         this.title = title;
         this.content = content;
         this.author = author;
+        this.categoryIds = categoryIds;
     }
 
     public String getTitle() {
@@ -21,5 +25,9 @@ public class BlogEntryRequestDto {
 
     public String getAuthor() {
         return author;
+    }
+
+    public Set<String> getCategoryIds() {
+        return categoryIds;
     }
 }

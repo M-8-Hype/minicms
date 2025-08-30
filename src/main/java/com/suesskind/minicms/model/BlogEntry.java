@@ -17,16 +17,17 @@ public class BlogEntry {
     private String content;
     private String author;
     private LocalDate releaseDate;
-    @ManyToMany private Set<Category> categories = new HashSet<>();
+    @ManyToMany private Set<Category> categories;
 
     public BlogEntry() { }
 
-    public BlogEntry(UUID id, String title, String content, String author, LocalDate releaseDate) {
+    public BlogEntry(UUID id, String title, String content, String author, LocalDate releaseDate, Set<Category> categories) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
         this.releaseDate = releaseDate;
+        this.categories = categories;
     }
 
     public UUID getId() {
