@@ -4,7 +4,6 @@ public class BlogEntryRequestDto {
     private String title;
     private String content;
     private String author;
-    private String releaseDate;
 
     public BlogEntryRequestDto(String title, String content, String author) {
         this.title = title;
@@ -22,9 +21,5 @@ public class BlogEntryRequestDto {
 
     public String getAuthor() {
         return author;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
     }
 }

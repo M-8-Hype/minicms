@@ -1,11 +1,15 @@
 package com.suesskind.minicms.controller;
 
+import com.suesskind.minicms.dto.BlogEntryRequestDto;
 import com.suesskind.minicms.dto.BlogEntryResponseDto;
 import com.suesskind.minicms.model.BlogEntry;
 import com.suesskind.minicms.service.BlogEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.suesskind.minicms.dto.BlogEntryRequestDto;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/blog")
@@ -15,29 +19,49 @@ public class BlogEntryController {
     private BlogEntryService blogEntryService;
 
     @GetMapping
-    public String getBlogEntries() {
-        return "List of blog entries";
+    public ResponseEntity<List<BlogEntryResponseDto>> getBlogEntries() {
+        List<BlogEntry> entries = blogEntryService.getBlogEntries();
+        List<BlogEntryResponseDto> dtos = entries.stream()
+                .map(this::mapToDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public String getBlogEntryById(@PathVariable Long id) {
-        return String.format("Blog entry with ID: %d", id);
+    public ResponseEntity<BlogEntryResponseDto> getBlogEntryById(@PathVariable String id) {
+        return blogEntryService.getBlogEntryById(id)
+                .map(entity -> {
+                    BlogEntryResponseDto dto = mapToDto(entity);
+                    return ResponseEntity.ok(dto);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public BlogEntryResponseDto createBlogEntry(@RequestBody BlogEntryRequestDto blogEntryRequestDto) {
+    public ResponseEntity<BlogEntryResponseDto> createBlogEntry(@RequestBody BlogEntryRequestDto blogEntryRequestDto) {
         BlogEntry blogEntry = blogEntryService.createBlogEntry(blogEntryRequestDto);
-        return mapToDto(blogEntry);
+        BlogEntryResponseDto dto = mapToDto(blogEntry);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/{id}")
-    public String updateBlogEntry(@PathVariable Long id, @RequestBody String blogEntry) {
-        return String.format("Updated blog entry with ID: %d to %s", id, blogEntry);
+    public ResponseEntity<BlogEntryResponseDto> updateBlogEntry(@PathVariable String id, @RequestBody BlogEntryRequestDto blogEntryRequestDto) {
+        return blogEntryService.updateBlogEntry(id, blogEntryRequestDto)
+                .map(updatedEntry -> {
+                    BlogEntryResponseDto dto = mapToDto(updatedEntry);
+                    return ResponseEntity.ok(dto);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public String deleteBlogEntry(@PathVariable Long id) {
-        return String.format("Deleted blog entry with ID: %d", id);
+    public ResponseEntity<?> deleteBlogEntry(@PathVariable String id) {
+        return blogEntryService.getBlogEntryById(id)
+                .map(entity -> {
+                    blogEntryService.deleteBlogEntry(id);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     private BlogEntryResponseDto mapToDto(BlogEntry blogEntry) {

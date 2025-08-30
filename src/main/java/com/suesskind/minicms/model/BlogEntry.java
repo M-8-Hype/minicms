@@ -44,4 +44,12 @@ public class BlogEntry {
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
