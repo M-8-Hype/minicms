@@ -3,6 +3,7 @@ package com.suesskind.minicms.service;
 import com.suesskind.minicms.dto.BlogEntryRequestDto;
 import com.suesskind.minicms.model.BlogEntry;
 import com.suesskind.minicms.repository.BlogEntryRepository;
+import com.suesskind.minicms.util.UuidUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class BlogEntryService {
     }
 
     public Optional<BlogEntry> getBlogEntryById(String id) {
-        UUID uuid = parseId(id);
+        UUID uuid = UuidUtils.parseId(id);
         return blogEntryRepository.findById(uuid);
     }
 
@@ -32,7 +33,7 @@ public class BlogEntryService {
     }
 
     public Optional<BlogEntry> updateBlogEntry(String id, BlogEntryRequestDto blogEntryRequestDto) {
-        UUID uuid = parseId(id);
+        UUID uuid = UuidUtils.parseId(id);
         String newTitle = blogEntryRequestDto.getTitle();
         String newContent = blogEntryRequestDto.getContent();
         return blogEntryRepository.findById(uuid)
@@ -48,26 +49,18 @@ public class BlogEntryService {
     }
 
     public void deleteBlogEntry(String id) {
-        UUID uuid = parseId(id);
+        UUID uuid = UuidUtils.parseId(id);
         blogEntryRepository.deleteById(uuid);
     }
 
     private BlogEntry mapToEntity(BlogEntryRequestDto requestDto) {
         return new BlogEntry(
-                generateId(),
+                UuidUtils.generateId(),
                 requestDto.getTitle(),
                 requestDto.getContent(),
                 requestDto.getAuthor(),
                 getCurrentDate()
         );
-    }
-
-    private UUID generateId() {
-        return UUID.randomUUID();
-    }
-
-    private UUID parseId(String id) {
-        return UUID.fromString(id);
     }
 
     private LocalDate getCurrentDate() {
