@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class BlogEntryService {
 
-    @Autowired
-    private BlogEntryRepository blogEntryRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    @Autowired private BlogEntryRepository blogEntryRepository;
+    @Autowired private CategoryRepository categoryRepository;
 
-    public List<BlogEntry> getBlogEntries() {
-        return blogEntryRepository.findAll();
+    public List<BlogEntry> getBlogEntries(List<String> categoryNames) {
+        return categoryNames == null || categoryNames.isEmpty()
+                ? blogEntryRepository.findAll()
+                : blogEntryRepository.findDistinctByCategoriesNameIn(categoryNames);
     }
 
     public Optional<BlogEntry> getBlogEntryById(String id) {
@@ -37,6 +37,9 @@ public class BlogEntryService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
+        if (categories.isEmpty()) {
+            return null;
+        }
         BlogEntry blogEntry = mapToEntity(blogEntryRequestDto, categories);
         return blogEntryRepository.save(blogEntry);
     }

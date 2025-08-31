@@ -39,7 +39,7 @@ public class CategoryController {
         return categoryService.getCategoryById(id)
                 .map(entity -> {
                     categoryService.deleteCategory(id);
-                    return ResponseEntity.ok().build();
+                    return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

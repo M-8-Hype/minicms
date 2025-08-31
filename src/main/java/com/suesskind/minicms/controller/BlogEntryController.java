@@ -22,8 +22,8 @@ public class BlogEntryController {
     private BlogEntryService blogEntryService;
 
     @GetMapping
-    public ResponseEntity<List<BlogEntryResponseDto>> getBlogEntries() {
-        List<BlogEntry> entries = blogEntryService.getBlogEntries();
+    public ResponseEntity<List<BlogEntryResponseDto>> getBlogEntries(@RequestParam(required = false) List<String> category) {
+        List<BlogEntry> entries = blogEntryService.getBlogEntries(category);
         List<BlogEntryResponseDto> dtos = entries.stream()
                 .map(this::mapToDto)
                 .toList();
@@ -43,6 +43,9 @@ public class BlogEntryController {
     @PostMapping
     public ResponseEntity<BlogEntryResponseDto> createBlogEntry(@RequestBody BlogEntryRequestDto blogEntryRequestDto) {
         BlogEntry blogEntry = blogEntryService.createBlogEntry(blogEntryRequestDto);
+        if (blogEntry == null) {
+            return ResponseEntity.badRequest().build();
+        }
         BlogEntryResponseDto dto = mapToDto(blogEntry);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
