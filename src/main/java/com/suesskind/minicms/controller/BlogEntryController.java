@@ -27,7 +27,7 @@ public class BlogEntryController {
     public ResponseEntity<List<BlogEntryResponseDto>> getBlogEntries(@RequestParam(required = false) List<String> category) {
         List<BlogEntry> entries = blogEntryService.getBlogEntries(category);
         List<BlogEntryResponseDto> dtos = entries.stream()
-                .map(this::mapToDto)
+                .map(BlogEntryController::mapToDto)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
@@ -79,7 +79,7 @@ public class BlogEntryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    private BlogEntryResponseDto mapToDto(BlogEntry blogEntry) {
+    public static BlogEntryResponseDto mapToDto(BlogEntry blogEntry) {
         Set<String> categoryNames = blogEntry.getCategories().stream()
                 .map(Category::getName)
                 .collect(Collectors.toSet());

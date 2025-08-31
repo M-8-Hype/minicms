@@ -3,7 +3,6 @@ package com.suesskind.minicms.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
