@@ -9,14 +9,17 @@ public class BlogEntryResponseDto {
     private String author;
     private String releaseDate;
     private Set<String> categories;
+    private String status;
 
-    public BlogEntryResponseDto(String id, String title, String content, String author, String releaseDate, Set<String> categories) {
+
+    public BlogEntryResponseDto(String id, String title, String content, String author, String releaseDate, Set<String> categories, String status) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.author = author;
         this.releaseDate = releaseDate;
         this.categories = categories;
+        this.status = status;
     }
 
     public String getId() {
@@ -41,5 +44,9 @@ public class BlogEntryResponseDto {
 
     public Set<String> getCategories() {
         return categories;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

@@ -2,6 +2,7 @@ package com.suesskind.minicms.service;
 
 import com.suesskind.minicms.dto.BlogEntryRequestDto;
 import com.suesskind.minicms.model.BlogEntry;
+import com.suesskind.minicms.model.BlogStatus;
 import com.suesskind.minicms.model.Category;
 import com.suesskind.minicms.repository.BlogEntryRepository;
 import com.suesskind.minicms.repository.CategoryRepository;
@@ -46,16 +47,9 @@ public class BlogEntryService {
 
     public Optional<BlogEntry> updateBlogEntry(String id, BlogEntryRequestDto blogEntryRequestDto) {
         UUID uuid = UuidUtils.parseId(id);
-        String newTitle = blogEntryRequestDto.getTitle();
-        String newContent = blogEntryRequestDto.getContent();
         return blogEntryRepository.findById(uuid)
                 .map(entry -> {
-                    if (newTitle != null && !newTitle.isBlank()) {
-                        entry.setTitle(newTitle);
-                    }
-                    if (newContent != null && !newContent.isBlank()) {
-                        entry.setContent(newContent);
-                    }
+                    updateEntryFromDto(entry, blogEntryRequestDto);
                     return blogEntryRepository.save(entry);
                 });
     }
@@ -74,6 +68,19 @@ public class BlogEntryService {
                 getCurrentDate(),
                 categories
         );
+    }
+
+    private void updateEntryFromDto(BlogEntry blogEntry, BlogEntryRequestDto requestDto) {
+        Optional.ofNullable(requestDto.getTitle())
+                .filter(title -> !title.isBlank())
+                .ifPresent(blogEntry::setTitle);
+        Optional.ofNullable(requestDto.getContent())
+                .filter(content -> !content.isBlank())
+                .ifPresent(blogEntry::setContent);
+        Optional.ofNullable(requestDto.getStatus())
+                .filter(status -> !status.isBlank())
+                .map(BlogStatus::fromJson)
+                .ifPresent(blogEntry::setStatus);
     }
 
     private LocalDate getCurrentDate() {

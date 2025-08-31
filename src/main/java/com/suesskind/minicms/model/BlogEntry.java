@@ -1,9 +1,6 @@
 package com.suesskind.minicms.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -18,6 +15,7 @@ public class BlogEntry {
     private String author;
     private LocalDate releaseDate;
     @ManyToMany private Set<Category> categories;
+    @Enumerated(EnumType.STRING) private BlogStatus status = BlogStatus.DRAFT;
 
     public BlogEntry() { }
 
@@ -54,11 +52,19 @@ public class BlogEntry {
         return categories;
     }
 
+    public BlogStatus getStatus() {
+        return status;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setStatus(BlogStatus status) {
+        this.status = status;
     }
 }
