@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 @Service
 public class BlogEntryService {
 
-    @Autowired private BlogEntryRepository blogEntryRepository;
-    @Autowired private CategoryRepository categoryRepository;
+    @Autowired
+    BlogEntryRepository blogEntryRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     public List<BlogEntry> getBlogEntries(List<String> categoryNames) {
         return categoryNames == null || categoryNames.isEmpty()
